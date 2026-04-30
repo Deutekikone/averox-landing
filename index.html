@@ -1,0 +1,925 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AVE ROX — La compétition fitness ultime</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Audiowide&family=Barlow+Condensed:ital,wght@0,300;0,400;0,600;0,700;0,800;0,900;1,700;1,900&family=Barlow:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --gold:#e3ac00;
+  --gold2:#f5c842;
+  --gold-dim:rgba(227,172,0,0.15);
+  --black:#070707;
+  --dark:#0f0f0f;
+  --dark2:#161616;
+  --dark3:#1e1e1e;
+  --white:#ffffff;
+  --off:#a0a0a0;
+  --dim:rgba(255,255,255,0.06);
+}
+html{scroll-behavior:smooth;font-size:16px}
+body{background:var(--black);color:var(--white);font-family:'Barlow',sans-serif;overflow-x:hidden;cursor:none}
+
+/* CUSTOM CURSOR */
+.cursor{position:fixed;width:8px;height:8px;background:var(--gold);border-radius:50%;pointer-events:none;z-index:9999;transform:translate(-50%,-50%);transition:transform 0.1s,width 0.2s,height 0.2s,opacity 0.2s}
+.cursor-ring{position:fixed;width:32px;height:32px;border:1px solid rgba(227,172,0,0.5);border-radius:50%;pointer-events:none;z-index:9998;transform:translate(-50%,-50%);transition:transform 0.15s cubic-bezier(0.23,1,0.32,1),width 0.3s,height 0.3s,opacity 0.3s,border-color 0.3s}
+body:hover .cursor{opacity:1}
+
+/* NOISE OVERLAY */
+body::before{content:'';position:fixed;inset:0;z-index:1;pointer-events:none;opacity:0.025;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");background-size:200px 200px}
+
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;z-index:500;padding:0 4vw;height:70px;display:flex;align-items:center;justify-content:space-between;transition:background 0.4s,border-color 0.4s;border-bottom:1px solid transparent}
+nav.scrolled{background:rgba(7,7,7,0.95);border-bottom-color:rgba(227,172,0,0.12);backdrop-filter:blur(12px)}
+.nav-logo img{height:36px;display:block;filter:brightness(1)}
+.nav-links{display:flex;gap:3rem;list-style:none}
+.nav-links a{color:rgba(255,255,255,0.5);text-decoration:none;font-family:'Barlow Condensed',sans-serif;font-size:0.8rem;font-weight:600;letter-spacing:0.25em;text-transform:uppercase;transition:color 0.2s;position:relative}
+.nav-links a::after{content:'';position:absolute;bottom:-4px;left:0;width:0;height:1px;background:var(--gold);transition:width 0.3s}
+.nav-links a:hover{color:var(--white)}
+.nav-links a:hover::after{width:100%}
+.nav-cta{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:0.75rem;letter-spacing:0.25em;text-transform:uppercase;color:var(--black);background:var(--gold);border:none;padding:0.6rem 1.8rem;cursor:pointer;transition:background 0.2s,transform 0.2s;clip-path:polygon(0 0,calc(100% - 10px) 0,100% 10px,100% 100%,10px 100%,0 calc(100% - 10px))}
+.nav-cta:hover{background:var(--gold2);transform:translateY(-1px)}
+nav-hamburger{display:none}
+
+/* HERO — FULL SCREEN SPLIT */
+.hero{position:relative;height:100vh;min-height:700px;display:grid;grid-template-columns:1fr 1fr;overflow:hidden}
+.hero-left{position:relative;display:flex;flex-direction:column;justify-content:flex-end;padding:0 4vw 8vh 4vw;z-index:10}
+.hero-right{position:relative;overflow:hidden}
+.hero-right-img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center top;filter:grayscale(15%) contrast(1.05)}
+.hero-right-overlay{position:absolute;inset:0;background:linear-gradient(to right,var(--black) 0%,rgba(7,7,7,0.4) 40%,rgba(7,7,7,0) 100%)}
+.hero-right-overlay2{position:absolute;inset:0;background:linear-gradient(to top,var(--black) 0%,transparent 30%)}
+
+.hero-eyebrow{font-family:'Barlow Condensed',sans-serif;font-size:0.7rem;font-weight:600;letter-spacing:0.45em;color:var(--gold);text-transform:uppercase;margin-bottom:2rem;display:flex;align-items:center;gap:1rem}
+.hero-eyebrow::before{content:'';width:40px;height:1px;background:var(--gold)}
+.hero-logo-wrap{margin-bottom:2rem}
+.hero-logo-wrap img{width:min(520px,55vw);display:block}
+.hero-desc{font-size:1.05rem;font-weight:300;color:rgba(255,255,255,0.55);line-height:1.75;max-width:480px;margin-bottom:3rem;letter-spacing:0.02em}
+.hero-desc strong{color:rgba(255,255,255,0.9);font-weight:500}
+.hero-actions{display:flex;align-items:center;gap:2rem;flex-wrap:wrap}
+.btn-hero{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:0.8rem;letter-spacing:0.25em;text-transform:uppercase;text-decoration:none;display:inline-flex;align-items:center;gap:0.75rem;transition:all 0.25s}
+.btn-hero-gold{color:var(--black);background:var(--gold);padding:0.85rem 2.5rem;clip-path:polygon(0 0,calc(100% - 12px) 0,100% 12px,100% 100%,12px 100%,0 calc(100% - 12px))}
+.btn-hero-gold:hover{background:var(--gold2);transform:translateX(4px)}
+.btn-hero-ghost{color:rgba(255,255,255,0.6);border:1px solid rgba(255,255,255,0.2);padding:0.85rem 2rem}
+.btn-hero-ghost:hover{color:var(--gold);border-color:var(--gold)}
+.hero-scroll-hint{position:absolute;bottom:2.5rem;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:0.5rem;opacity:0.4;z-index:10}
+.hero-scroll-hint span{font-family:'Barlow Condensed',sans-serif;font-size:0.65rem;letter-spacing:0.35em;text-transform:uppercase}
+.scroll-bar{width:1px;height:60px;background:linear-gradient(to bottom,transparent,var(--gold),transparent);animation:pulse 2s ease-in-out infinite}
+@keyframes pulse{0%,100%{opacity:0.3;transform:scaleY(0.8)}50%{opacity:1;transform:scaleY(1)}}
+
+.hero-stat-strip{position:absolute;bottom:0;left:0;right:0;z-index:20;display:grid;grid-template-columns:repeat(4,1fr);border-top:1px solid rgba(227,172,0,0.15)}
+.hero-stat{padding:1.5rem 2vw;background:rgba(7,7,7,0.9);border-right:1px solid rgba(227,172,0,0.1);backdrop-filter:blur(8px)}
+.hero-stat:last-child{border-right:none}
+.hero-stat-num{font-family:'Barlow Condensed',sans-serif;font-size:2.2rem;font-weight:900;color:var(--gold);line-height:1;letter-spacing:-0.02em}
+.hero-stat-label{font-size:0.72rem;font-weight:400;color:rgba(255,255,255,0.35);letter-spacing:0.18em;text-transform:uppercase;margin-top:0.3rem}
+
+/* TICKER */
+.ticker-wrap{background:var(--gold);overflow:hidden;height:36px;display:flex;align-items:center}
+.ticker{display:flex;animation:ticker 20s linear infinite;white-space:nowrap}
+.ticker-item{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:0.75rem;letter-spacing:0.3em;text-transform:uppercase;color:var(--black);padding:0 3rem}
+.ticker-sep{color:rgba(0,0,0,0.4)}
+@keyframes ticker{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+
+/* SECTIONS COMMON */
+.s{padding:8rem 4vw}
+.s-inner{max-width:1300px;margin:0 auto}
+.s-label{font-family:'Barlow Condensed',sans-serif;font-size:0.68rem;font-weight:600;letter-spacing:0.45em;color:var(--gold);text-transform:uppercase;margin-bottom:1rem;display:flex;align-items:center;gap:1rem}
+.s-label::before{content:'';width:30px;height:1px;background:var(--gold)}
+.s-title{font-family:'Barlow Condensed',sans-serif;font-size:clamp(2.5rem,5vw,4.5rem);font-weight:900;line-height:0.95;letter-spacing:-0.02em;text-transform:uppercase}
+.s-title em{color:var(--gold);font-style:normal}
+
+/* CONCEPT SECTION */
+.concept{background:var(--black)}
+.concept-layout{display:grid;grid-template-columns:5fr 7fr;gap:6vw;align-items:center;margin-top:5rem}
+.concept-copy p{font-size:1.05rem;font-weight:300;color:rgba(255,255,255,0.55);line-height:1.85;margin-bottom:1.2rem}
+.concept-copy p strong{color:var(--white);font-weight:500}
+.concept-visual{position:relative}
+.concept-img-wrap{position:relative;clip-path:polygon(0 0,100% 0,100% calc(100% - 40px),calc(100% - 40px) 100%,0 100%)}
+.concept-img-wrap img{width:100%;height:500px;object-fit:cover;object-position:center;display:block;filter:grayscale(20%) contrast(1.1)}
+.concept-img-label{position:absolute;bottom:-1px;right:0;background:var(--gold);padding:0.6rem 1.2rem;font-family:'Barlow Condensed',sans-serif;font-size:0.7rem;font-weight:700;letter-spacing:0.2em;text-transform:uppercase;color:var(--black)}
+
+/* FORMAT STEPS */
+.format{background:var(--dark);border-top:1px solid var(--dim)}
+.steps-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:rgba(255,255,255,0.05);margin-top:5rem}
+.step{background:var(--dark);padding:2.5rem 2rem;position:relative;overflow:hidden;transition:background 0.3s}
+.step::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:transparent;transition:background 0.3s}
+.step:hover{background:var(--dark2)}
+.step:hover::before{background:var(--gold)}
+.step-n{font-family:'Barlow Condensed',sans-serif;font-size:5rem;font-weight:900;color:rgba(227,172,0,0.06);line-height:1;margin-bottom:-1rem;letter-spacing:-0.03em}
+.step-icon{font-size:1.5rem;margin-bottom:1rem;display:block}
+.step-title{font-family:'Barlow Condensed',sans-serif;font-size:1.1rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--white);margin-bottom:0.75rem}
+.step-desc{font-size:0.88rem;font-weight:300;color:rgba(255,255,255,0.45);line-height:1.7}
+
+/* REGISTRATION */
+.register-section{background:var(--black);border-top:1px solid var(--dim)}
+.register-layout{display:grid;grid-template-columns:5fr 7fr;gap:6vw;align-items:start;margin-top:5rem}
+.register-aside h3{font-family:'Barlow Condensed',sans-serif;font-size:1.6rem;font-weight:800;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:1.5rem;color:var(--white)}
+.register-aside p{font-size:0.95rem;font-weight:300;color:rgba(255,255,255,0.5);line-height:1.8;margin-bottom:1.5rem}
+.checklist{list-style:none;display:flex;flex-direction:column;gap:0.6rem;margin-bottom:2rem}
+.checklist li{display:flex;align-items:flex-start;gap:0.75rem;font-size:0.9rem;font-weight:300;color:rgba(255,255,255,0.55)}
+.checklist li::before{content:'';width:16px;height:16px;background:var(--gold-dim);border:1px solid rgba(227,172,0,0.4);flex-shrink:0;margin-top:2px;display:flex;align-items:center;justify-content:center}
+.checklist li.done::before{background:var(--gold);content:'✓';font-size:10px;color:var(--black);font-weight:700;line-height:16px;text-align:center}
+.price-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:rgba(255,255,255,0.06)}
+.price-cell{background:var(--dark2);padding:1.25rem;text-align:center}
+.price-cell .amount{font-family:'Barlow Condensed',sans-serif;font-size:2rem;font-weight:900;color:var(--gold)}
+.price-cell .cat{font-size:0.7rem;letter-spacing:0.2em;text-transform:uppercase;color:rgba(255,255,255,0.3);margin-top:0.25rem}
+
+/* FORM */
+.form-panel{background:var(--dark2);border:1px solid rgba(227,172,0,0.12);padding:3rem}
+.form-head{font-family:'Barlow Condensed',sans-serif;font-size:1rem;font-weight:700;letter-spacing:0.25em;text-transform:uppercase;color:var(--gold);margin-bottom:2rem;display:flex;align-items:center;gap:1rem}
+.form-head::before{content:'';flex:1;height:1px;background:rgba(227,172,0,0.2)}
+.f-row{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1rem}
+.f-group{display:flex;flex-direction:column;gap:0.35rem;margin-bottom:1rem}
+.f-group label{font-family:'Barlow Condensed',sans-serif;font-size:0.65rem;font-weight:600;letter-spacing:0.3em;text-transform:uppercase;color:rgba(255,255,255,0.35)}
+.f-group input,.f-group select,.f-group textarea{background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);color:var(--white);font-family:'Barlow',sans-serif;font-size:0.95rem;font-weight:300;padding:0.75rem 1rem;outline:none;transition:border-color 0.2s,background 0.2s;-webkit-appearance:none}
+.f-group input:focus,.f-group select:focus,.f-group textarea:focus{border-color:rgba(227,172,0,0.5);background:rgba(227,172,0,0.03)}
+.f-group select option{background:#1e1e1e}
+.f-group textarea{resize:vertical;min-height:80px}
+.f-submit{width:100%;background:var(--gold);color:var(--black);font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:0.85rem;letter-spacing:0.3em;text-transform:uppercase;padding:1.1rem 2rem;border:none;cursor:pointer;transition:background 0.2s,transform 0.2s;clip-path:polygon(0 0,calc(100% - 14px) 0,100% 14px,100% 100%,14px 100%,0 calc(100% - 14px));margin-top:1rem}
+.f-submit:hover{background:var(--gold2);transform:translateY(-2px)}
+.toast{display:none;padding:1rem;font-size:0.85rem;letter-spacing:0.05em;margin-top:1rem;font-family:'Barlow Condensed',sans-serif;font-weight:600;letter-spacing:0.15em;text-transform:uppercase}
+.toast.ok{display:block;background:rgba(227,172,0,0.08);border-left:3px solid var(--gold);color:var(--gold)}
+.toast.err{display:block;background:rgba(239,68,68,0.08);border-left:3px solid #ef4444;color:#ef4444}
+
+/* ADMIN */
+.admin-s{background:var(--dark);border-top:1px solid var(--dim);padding:4rem 4vw}
+.admin-trigger{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:0.72rem;letter-spacing:0.3em;text-transform:uppercase;background:transparent;border:1px solid rgba(227,172,0,0.3);color:rgba(227,172,0,0.7);padding:0.6rem 1.5rem;cursor:pointer;transition:all 0.2s}
+.admin-trigger:hover{border-color:var(--gold);color:var(--gold)}
+.admin-content{display:none;margin-top:2rem}
+.admin-content.open{display:block}
+.pw-row{display:flex;gap:0.75rem;align-items:center;margin-bottom:2rem;max-width:400px}
+.pw-row input{flex:1;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);color:var(--white);font-family:'Barlow',sans-serif;font-size:0.9rem;padding:0.6rem 1rem;outline:none}
+.pw-row input:focus{border-color:rgba(227,172,0,0.4)}
+.btn-sm{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:0.7rem;letter-spacing:0.2em;text-transform:uppercase;padding:0.6rem 1.2rem;border:none;cursor:pointer;transition:all 0.2s}
+.btn-sm-gold{background:var(--gold);color:var(--black)}
+.btn-sm-outline{background:transparent;border:1px solid rgba(227,172,0,0.4);color:var(--gold)}
+.btn-sm-outline:hover{border-color:var(--gold)}
+.reg-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem;flex-wrap:wrap;gap:1rem}
+.reg-count{font-family:'Barlow Condensed',sans-serif;font-size:0.8rem;letter-spacing:0.2em;color:rgba(255,255,255,0.35);text-transform:uppercase}
+.actions-row{display:flex;gap:0.75rem}
+.rtable{width:100%;border-collapse:collapse;font-size:0.82rem}
+.rtable th{background:rgba(227,172,0,0.07);color:rgba(227,172,0,0.8);font-family:'Barlow Condensed',sans-serif;font-size:0.65rem;font-weight:600;letter-spacing:0.25em;text-transform:uppercase;padding:0.8rem 1rem;text-align:left;border-bottom:1px solid rgba(227,172,0,0.2)}
+.rtable td{padding:0.7rem 1rem;border-bottom:1px solid rgba(255,255,255,0.04);color:rgba(255,255,255,0.6);vertical-align:middle}
+.rtable tr:hover td{background:rgba(255,255,255,0.02)}
+.badge{font-family:'Barlow Condensed',sans-serif;font-size:0.65rem;font-weight:700;letter-spacing:0.15em;text-transform:uppercase;padding:3px 10px}
+.badge-solo{background:rgba(227,172,0,0.12);color:var(--gold)}
+.badge-duo{background:rgba(96,165,250,0.12);color:#60a5fa}
+.badge-équipe{background:rgba(74,222,128,0.12);color:#4ade80}
+.empty-row{text-align:center;padding:3rem;color:rgba(255,255,255,0.2);font-family:'Barlow Condensed',sans-serif;letter-spacing:0.2em;font-size:0.8rem;text-transform:uppercase}
+
+/* DOCS */
+.docs-s{background:var(--black);border-top:1px solid var(--dim)}
+.docs-layout{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1px;background:rgba(255,255,255,0.05);margin-top:3.5rem}
+.doc-item{background:var(--dark);padding:2rem;display:flex;align-items:center;gap:1.5rem;cursor:pointer;transition:background 0.2s;text-decoration:none}
+.doc-item:hover{background:var(--dark2)}
+.doc-icon-wrap{width:48px;height:48px;border:1px solid rgba(227,172,0,0.3);display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:background 0.2s}
+.doc-item:hover .doc-icon-wrap{background:rgba(227,172,0,0.08)}
+.doc-icon-wrap svg{width:20px;height:20px;stroke:var(--gold);fill:none;stroke-width:1.5}
+.doc-body{flex:1;min-width:0}
+.doc-title{font-family:'Barlow Condensed',sans-serif;font-size:0.95rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--white);margin-bottom:0.3rem}
+.doc-meta{font-size:0.78rem;color:rgba(255,255,255,0.3);letter-spacing:0.05em}
+.doc-arrow{font-family:'Barlow Condensed',sans-serif;font-size:0.7rem;font-weight:700;letter-spacing:0.2em;color:var(--gold);text-transform:uppercase;white-space:nowrap;opacity:0;transition:opacity 0.2s}
+.doc-item:hover .doc-arrow{opacity:1}
+.upload-zone{border:1px dashed rgba(227,172,0,0.2);padding:2.5rem;text-align:center;margin-top:2rem;cursor:pointer;transition:border-color 0.2s,background 0.2s}
+.upload-zone:hover{border-color:rgba(227,172,0,0.5);background:rgba(227,172,0,0.02)}
+.upload-zone p{font-size:0.85rem;color:rgba(255,255,255,0.3);margin-top:0.5rem;letter-spacing:0.05em}
+.upload-zone-label{font-family:'Barlow Condensed',sans-serif;font-size:0.8rem;font-weight:700;letter-spacing:0.25em;color:var(--gold);text-transform:uppercase}
+
+/* PARTNERS */
+.partners-s{background:var(--dark);border-top:1px solid var(--dim)}
+.partners-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:1px;background:rgba(255,255,255,0.04);margin-top:3.5rem}
+.partner{background:var(--dark);padding:2.5rem 1.5rem;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0.75rem;transition:background 0.2s;cursor:pointer}
+.partner:hover{background:rgba(227,172,0,0.04)}
+.partner-ph{width:90px;height:35px;background:rgba(255,255,255,0.06);display:flex;align-items:center;justify-content:center}
+.partner-ph span{font-family:'Barlow Condensed',sans-serif;font-size:0.55rem;letter-spacing:0.2em;text-transform:uppercase;color:rgba(255,255,255,0.15)}
+.partner-label{font-size:0.68rem;letter-spacing:0.2em;text-transform:uppercase;color:rgba(255,255,255,0.2);text-align:center}
+.partner-cta{text-align:center;margin-top:3rem}
+.partner-cta p{font-size:0.85rem;color:rgba(255,255,255,0.3);margin-bottom:1rem;letter-spacing:0.05em}
+
+/* SOCIALS */
+.socials-s{background:var(--black);border-top:1px solid var(--dim);padding:6rem 4vw;text-align:center}
+.social-row{display:flex;justify-content:center;gap:0.75rem;flex-wrap:wrap;margin-top:3rem}
+.social-link{display:flex;align-items:center;gap:0.75rem;background:var(--dark2);border:1px solid rgba(255,255,255,0.07);color:rgba(255,255,255,0.55);padding:0.85rem 1.75rem;text-decoration:none;font-family:'Barlow Condensed',sans-serif;font-size:0.72rem;font-weight:600;letter-spacing:0.25em;text-transform:uppercase;transition:all 0.2s;clip-path:polygon(0 0,calc(100% - 8px) 0,100% 8px,100% 100%,8px 100%,0 calc(100% - 8px))}
+.social-link:hover{color:var(--gold);border-color:rgba(227,172,0,0.4);background:rgba(227,172,0,0.04)}
+.social-link svg{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:1.5;flex-shrink:0}
+
+/* FOOTER */
+footer{background:var(--dark);border-top:1px solid rgba(227,172,0,0.12);padding:4rem 4vw 2rem}
+.footer-inner{max-width:1300px;margin:0 auto}
+.footer-top{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:4rem;margin-bottom:4rem}
+.footer-brand img{height:32px;margin-bottom:1rem;opacity:0.85}
+.footer-brand p{font-size:0.85rem;font-weight:300;color:rgba(255,255,255,0.3);line-height:1.7;max-width:260px}
+.footer-col h4{font-family:'Barlow Condensed',sans-serif;font-size:0.68rem;font-weight:600;letter-spacing:0.35em;text-transform:uppercase;color:rgba(255,255,255,0.35);margin-bottom:1.25rem}
+.footer-col ul{list-style:none;display:flex;flex-direction:column;gap:0.6rem}
+.footer-col ul a{font-size:0.85rem;font-weight:300;color:rgba(255,255,255,0.4);text-decoration:none;transition:color 0.2s;letter-spacing:0.03em}
+.footer-col ul a:hover{color:var(--gold)}
+.footer-bottom{border-top:1px solid rgba(255,255,255,0.05);padding-top:2rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem}
+.footer-bottom p{font-size:0.78rem;color:rgba(255,255,255,0.2);letter-spacing:0.05em}
+
+/* MODAL */
+.modal-bg{position:fixed;inset:0;background:rgba(0,0,0,0.9);z-index:800;display:none;align-items:center;justify-content:center;backdrop-filter:blur(4px)}
+.modal-bg.open{display:flex}
+.modal-box{background:var(--dark2);border:1px solid rgba(227,172,0,0.2);padding:2.5rem;max-width:500px;width:90%;position:relative}
+.modal-box h3{font-family:'Barlow Condensed',sans-serif;font-size:1.2rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--gold);margin-bottom:1rem}
+.modal-box p{font-size:0.85rem;color:rgba(255,255,255,0.45);line-height:1.7;margin-bottom:1.5rem}
+.modal-close{position:absolute;top:1rem;right:1rem;background:none;border:none;color:rgba(255,255,255,0.3);cursor:pointer;font-size:1rem;transition:color 0.2s}
+.modal-close:hover{color:var(--white)}
+.code-hint{background:rgba(0,0,0,0.4);border:1px solid rgba(255,255,255,0.07);padding:0.75rem 1rem;font-family:monospace;font-size:0.78rem;color:var(--gold);margin-bottom:1.5rem;letter-spacing:0.05em}
+
+/* ANIMATIONS */
+.reveal{opacity:0;transform:translateY(24px);transition:opacity 0.7s cubic-bezier(0.16,1,0.3,1),transform 0.7s cubic-bezier(0.16,1,0.3,1)}
+.reveal.visible{opacity:1;transform:none}
+.reveal-delay-1{transition-delay:0.1s}
+.reveal-delay-2{transition-delay:0.2s}
+.reveal-delay-3{transition-delay:0.3s}
+.reveal-delay-4{transition-delay:0.4s}
+
+@media(max-width:900px){
+  .hero{grid-template-columns:1fr;min-height:100svh}
+  .hero-right{position:absolute;inset:0;z-index:1}
+  .hero-left{z-index:2;padding:100px 6vw 120px;background:linear-gradient(to bottom,rgba(7,7,7,0.7) 0%,rgba(7,7,7,0.9) 100%)}
+  .hero-logo-wrap img{width:min(300px,80vw)}
+  .hero-stat-strip{grid-template-columns:repeat(2,1fr)}
+  .concept-layout,.register-layout{grid-template-columns:1fr}
+  .steps-grid{grid-template-columns:repeat(2,1fr)}
+  .partners-grid{grid-template-columns:repeat(3,1fr)}
+  .footer-top{grid-template-columns:1fr 1fr}
+  .nav-links{display:none}
+}
+
+/* ===== MOBILE RESPONSIVE ===== */
+@media(max-width:768px){
+  /* Hide cursor on mobile */
+  .cursor,.cursor-ring{display:none}
+
+  /* NAV */
+  nav{padding:0 1.5rem;height:60px}
+  .nav-links{display:none}
+  .nav-logo img{height:28px}
+  .nav-cta{font-size:0.65rem;padding:0.5rem 1rem}
+
+  /* HERO — single column, bg image full */
+  .hero{grid-template-columns:1fr;min-height:100svh;min-height:100vh}
+  .hero-right{position:absolute;inset:0;z-index:1}
+  .hero-right img{width:100%;height:100%;object-fit:cover;object-position:center top}
+  .hero-right-overlay{background:linear-gradient(to right,rgba(7,7,7,0.85) 0%,rgba(7,7,7,0.5) 100%)}
+  .hero-left{z-index:2;padding:80px 1.5rem 140px;justify-content:flex-end;background:linear-gradient(to top,rgba(7,7,7,0.95) 0%,rgba(7,7,7,0.3) 100%)}
+  .hero-eyebrow{font-size:0.6rem;letter-spacing:0.3em;margin-bottom:1rem}
+  .hero-logo-wrap img{width:min(280px,75vw)}
+  .hero-desc{font-size:0.9rem;margin-bottom:2rem;color:rgba(255,255,255,0.65)}
+  .hero-actions{gap:0.75rem}
+  .btn-hero-gold,.btn-hero-ghost{font-size:0.72rem;padding:0.75rem 1.5rem}
+  .hero-stat-strip{grid-template-columns:repeat(2,1fr);position:absolute;bottom:0;left:0;right:0}
+  .hero-stat{padding:1rem 1rem}
+  .hero-stat-num{font-size:1.6rem}
+  .hero-stat-label{font-size:0.6rem}
+  .hero-scroll-hint{display:none}
+
+  /* TICKER */
+  .ticker-item{font-size:0.65rem;padding:0 1.5rem}
+
+  /* SECTIONS */
+  .s{padding:4rem 1.5rem}
+  .s-title{font-size:clamp(2rem,8vw,3rem)}
+
+  /* CONCEPT */
+  .concept-layout{grid-template-columns:1fr;gap:2rem;margin-top:2.5rem}
+  .concept-img-wrap img{height:260px}
+  .concept-copy p{font-size:0.9rem}
+
+  /* STEPS */
+  .steps-grid{grid-template-columns:1fr 1fr;gap:1px;margin-top:2.5rem}
+  .step{padding:1.5rem 1rem}
+  .step-n{font-size:3rem}
+  .step-title{font-size:0.85rem}
+  .step-desc{font-size:0.8rem}
+
+  /* REGISTER */
+  .register-layout{grid-template-columns:1fr;gap:2rem;margin-top:2.5rem}
+  .register-aside{order:2}
+  .form-panel{order:1;padding:1.5rem}
+  .f-row{grid-template-columns:1fr}
+  .register-aside h3{margin-top:0}
+  .register-aside p{font-size:0.85rem}
+  .checklist li{font-size:0.85rem}
+  .price-grid .amount{font-size:1.5rem}
+
+  /* ADMIN */
+  .admin-s{padding:3rem 1.5rem}
+  .rtable{font-size:0.75rem}
+  .rtable th,.rtable td{padding:0.5rem 0.6rem}
+  /* Hide less-important columns on mobile */
+  .rtable th:nth-child(5),.rtable td:nth-child(5),
+  .rtable th:nth-child(8),.rtable td:nth-child(8),
+  .rtable th:nth-child(9),.rtable td:nth-child(9){display:none}
+
+  /* DOCS */
+  .docs-layout{grid-template-columns:1fr;gap:1px}
+  .doc-item{padding:1.25rem}
+  .doc-title{font-size:0.85rem}
+
+  /* PARTNERS */
+  .partners-grid{grid-template-columns:repeat(2,1fr)}
+  .partners-s .s-title{font-size:2rem}
+
+  /* SOCIALS */
+  .socials-s{padding:3rem 1.5rem}
+  .social-row{gap:0.5rem}
+  .social-link{padding:0.7rem 1rem;font-size:0.65rem}
+
+  /* FOOTER */
+  footer{padding:3rem 1.5rem 2rem}
+  .footer-top{grid-template-columns:1fr 1fr;gap:2rem;margin-bottom:2.5rem}
+  .footer-brand{grid-column:1/-1}
+  .footer-brand p{max-width:100%}
+  .footer-brand img{height:26px}
+  .footer-bottom{flex-direction:column;gap:0.5rem;text-align:center}
+
+  /* MODAL */
+  .modal-box{padding:1.5rem}
+}
+
+@media(max-width:480px){
+  .hero-stat-strip{grid-template-columns:repeat(2,1fr)}
+  .hero-logo-wrap img{width:min(240px,70vw)}
+  .steps-grid{grid-template-columns:1fr}
+  .partners-grid{grid-template-columns:repeat(3,1fr)}
+  .social-link{padding:0.6rem 0.8rem}
+  .social-link svg{display:none}
+  .footer-top{grid-template-columns:1fr}
+}
+</style>
+
+<!-- CURSOR -->
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursor-ring"></div>
+
+<!-- NAV -->
+<nav id="main-nav">
+  <div class="nav-logo">
+    <img src="./images/logo.png" alt="AVE ROX">
+  </div>
+  <ul class="nav-links">
+    <li><a href="#concept">Concept</a></li>
+    <li><a href="#format">Format</a></li>
+    <li><a href="#inscription">Inscription</a></li>
+    <li><a href="#docs">Docs</a></li>
+    <li><a href="#partenaires">Partenaires</a></li>
+  </ul>
+  <button class="nav-cta" onclick="document.getElementById('inscription').scrollIntoView({behavior:'smooth'})">S'inscrire</button>
+</nav>
+
+<!-- HERO -->
+<section class="hero" id="hero">
+  <div class="hero-left">
+    <div class="hero-eyebrow">Inspiré de HYROX · Format Français · Edition 2025</div>
+    <div class="hero-logo-wrap">
+      <img src="./images/logo.png" alt="AVE ROX Logo">
+    </div>
+    <p class="hero-desc">La compétition qui fusionne <strong>course à pied</strong> et <strong>fitness fonctionnel</strong>. 8 stations. Un seul chrono. Zéro excuse.</p>
+    <div class="hero-actions">
+      <a class="btn-hero btn-hero-gold" href="#inscription">
+        Je m'inscris
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
+      </a>
+      <a class="btn-hero btn-hero-ghost" href="#concept">Découvrir l'event</a>
+    </div>
+  </div>
+  <div class="hero-right">
+    <img class="hero-right-img" src="./images/poster.jpg" alt="AVE ROX Athletes">
+    <div class="hero-right-overlay"></div>
+    <div class="hero-right-overlay2"></div>
+  </div>
+  <div class="hero-stat-strip">
+    <div class="hero-stat"><div class="hero-stat-num">8</div><div class="hero-stat-label">Stations</div></div>
+    <div class="hero-stat"><div class="hero-stat-num">1 km</div><div class="hero-stat-label">Entre chaque</div></div>
+    <div class="hero-stat"><div class="hero-stat-num">3</div><div class="hero-stat-label">Formats</div></div>
+    <div class="hero-stat"><div class="hero-stat-num">100%</div><div class="hero-stat-label">Adrénaline</div></div>
+  </div>
+  <div class="hero-scroll-hint">
+    <span>Scroll</span>
+    <div class="scroll-bar"></div>
+  </div>
+</section>
+
+<!-- TICKER -->
+<div class="ticker-wrap">
+  <div class="ticker">
+    <span class="ticker-item">AVE ROX <span class="ticker-sep">·</span></span>
+    <span class="ticker-item">Course + Fitness <span class="ticker-sep">·</span></span>
+    <span class="ticker-item">8 Stations <span class="ticker-sep">·</span></span>
+    <span class="ticker-item">Inspiré HYROX <span class="ticker-sep">·</span></span>
+    <span class="ticker-item">Solo · Duo · Équipe <span class="ticker-sep">·</span></span>
+    <span class="ticker-item">Dépassement de soi <span class="ticker-sep">·</span></span>
+    <span class="ticker-item">AVE ROX <span class="ticker-sep">·</span></span>
+    <span class="ticker-item">Course + Fitness <span class="ticker-sep">·</span></span>
+    <span class="ticker-item">8 Stations <span class="ticker-sep">·</span></span>
+    <span class="ticker-item">Inspiré HYROX <span class="ticker-sep">·</span></span>
+    <span class="ticker-item">Solo · Duo · Équipe <span class="ticker-sep">·</span></span>
+    <span class="ticker-item">Dépassement de soi <span class="ticker-sep">·</span></span>
+  </div>
+</div>
+
+
+<!-- CONCEPT -->
+<section class="s concept" id="concept">
+  <div class="s-inner">
+    <div class="s-label reveal">Le concept</div>
+    <h2 class="s-title reveal reveal-delay-1">Repousse<br>tes <em>limites</em></h2>
+    <div class="concept-layout">
+      <div class="concept-copy">
+        <p class="reveal">AVE ROX est une compétition fitness d'un nouveau genre, directement <strong>inspirée du format mondial HYROX</strong>, repensée et adaptée pour la scène française.</p>
+        <p class="reveal reveal-delay-1">Le concept est simple et brutal : alterner <strong>courses de 1 km</strong> et <strong>stations de fitness fonctionnel</strong>. Ski Erg, Sled Push, Burpees Broad Jump, Wall Balls — des exercices standardisés qui testent ta force, ton endurance et ton mental.</p>
+        <p class="reveal reveal-delay-2">Solo pour ceux qui veulent un défi pur. Duo pour affronter l'épreuve à deux. Équipe pour vivre l'expérience collective. <strong>Chaque format est chronométré</strong> — le temps est ta seule mesure.</p>
+        <div class="reveal reveal-delay-3" style="margin-top:2.5rem;display:flex;gap:1rem;flex-wrap:wrap">
+          <a href="#inscription" class="btn-hero btn-hero-gold" style="text-decoration:none;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:0.78rem;letter-spacing:0.25em;text-transform:uppercase;color:var(--black);background:var(--gold);padding:0.85rem 2.2rem;clip-path:polygon(0 0,calc(100% - 12px) 0,100% 12px,100% 100%,12px 100%,0 calc(100% - 12px));display:inline-flex;align-items:center;gap:0.6rem">S'inscrire maintenant</a>
+          <a href="#docs" class="btn-hero btn-hero-ghost" style="text-decoration:none;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:0.78rem;letter-spacing:0.25em;text-transform:uppercase;color:rgba(255,255,255,0.6);border:1px solid rgba(255,255,255,0.2);padding:0.85rem 2rem;display:inline-block">Voir le règlement</a>
+        </div>
+      </div>
+      <div class="concept-visual reveal reveal-delay-2">
+        <div class="concept-img-wrap">
+          <img src="./images/poster.jpg" alt="AVE ROX Athletes" style="width:100%;height:520px;object-fit:cover;object-position:center top;display:block;filter:grayscale(20%) contrast(1.1)">
+        </div>
+        <div class="concept-img-label">Les athlètes AVE ROX</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FORMAT -->
+<section class="s format" id="format">
+  <div class="s-inner">
+    <div class="s-label reveal">Le déroulé</div>
+    <h2 class="s-title reveal reveal-delay-1">Comment ça<br><em>fonctionne</em></h2>
+    <div class="steps-grid" style="margin-top:5rem">
+      <div class="step reveal">
+        <div class="step-n">01</div>
+        <span class="step-icon">🏃</span>
+        <div class="step-title">Course de liaison</div>
+        <div class="step-desc">1 km à chaque transition. Gérez votre allure entre chaque station — c'est là que le mental fait la différence.</div>
+      </div>
+      <div class="step reveal reveal-delay-1">
+        <div class="step-n">02</div>
+        <span class="step-icon">💪</span>
+        <div class="step-title">Station fonctionnelle</div>
+        <div class="step-desc">Ski Erg, Sled Push, Burpees Broad Jump, Rowing, Wall Balls... 8 exercices standardisés, aucun compromis.</div>
+      </div>
+      <div class="step reveal reveal-delay-2">
+        <div class="step-n">03</div>
+        <span class="step-icon">👥</span>
+        <div class="step-title">Choisissez votre format</div>
+        <div class="step-desc">Solo, Duo ou Équipe. Chaque format est chronométré avec précision. Le défi individuel ou l'esprit collectif — à vous de décider.</div>
+      </div>
+      <div class="step reveal reveal-delay-3">
+        <div class="step-n">04</div>
+        <span class="step-icon">🏆</span>
+        <div class="step-title">Classement & podium</div>
+        <div class="step-desc">Le temps total fait foi. Chronométrage officiel, classement en direct, podium et remise de récompenses en fin d'événement.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- INSCRIPTION -->
+<section class="s register-section" id="inscription">
+  <div class="s-inner">
+    <div class="s-label reveal">Rejoins la compétition</div>
+    <h2 class="s-title reveal reveal-delay-1">Formulaire<br>d'<em>inscription</em></h2>
+    <div class="register-layout">
+      <div class="register-aside">
+        <h3 class="reveal" style="font-family:'Barlow Condensed',sans-serif;font-size:1.6rem;font-weight:800;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:1.5rem;margin-top:3rem">Informations pratiques</h3>
+        <p class="reveal" style="font-size:0.95rem;font-weight:300;color:rgba(255,255,255,0.5);line-height:1.8;margin-bottom:1.5rem">Rejoignez AVE ROX et participez à la compétition fitness qui repousse vos limites. Un événement unique alliant performance, esprit de communauté et dépassement de soi.</p>
+        <ul class="checklist">
+          <li class="done reveal">Inscription valable jusqu'à 7 jours avant l'événement</li>
+          <li class="done reveal reveal-delay-1">Confirmation par email sous 48h</li>
+          <li class="done reveal reveal-delay-2">Matériel fourni sur place pour toutes les stations</li>
+          <li class="done reveal reveal-delay-3">Accès vestiaires, buvette et espace récupération</li>
+          <li class="done reveal">Chronométrage officiel avec classement en temps réel</li>
+          <li class="done reveal reveal-delay-1">Photos et vidéos disponibles après l'événement</li>
+        </ul>
+        <div class="price-grid reveal" style="margin-top:2rem">
+          <div class="price-cell"><div class="amount">—€</div><div class="cat">Solo</div></div>
+          <div class="price-cell"><div class="amount">—€</div><div class="cat">Duo</div></div>
+          <div class="price-cell"><div class="amount">—€</div><div class="cat">Équipe</div></div>
+        </div>
+        <p style="font-size:0.75rem;color:rgba(255,255,255,0.2);margin-top:0.75rem;letter-spacing:0.05em">Tarifs à venir — Paiement sécurisé en ligne</p>
+        <div style="margin-top:2rem;padding:1.25rem;border:1px solid rgba(255,255,255,0.06);background:rgba(255,255,255,0.02)">
+          <div style="font-family:'Barlow Condensed',sans-serif;font-size:0.65rem;font-weight:600;letter-spacing:0.3em;color:rgba(255,255,255,0.25);text-transform:uppercase;margin-bottom:0.5rem">Config email auto</div>
+          <div style="font-size:0.8rem;color:rgba(255,255,255,0.3);line-height:1.6;margin-bottom:0.75rem">Activez EmailJS pour envoyer une confirmation automatique à chaque inscription.</div>
+          <button onclick="document.getElementById('ejs-modal').classList.add('open')" style="font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:0.68rem;letter-spacing:0.2em;text-transform:uppercase;background:transparent;border:1px solid rgba(227,172,0,0.3);color:rgba(227,172,0,0.7);padding:0.5rem 1.2rem;cursor:pointer">Configurer EmailJS</button>
+        </div>
+      </div>
+      <div class="form-panel reveal reveal-delay-2">
+        <div class="form-head">Inscription AVE ROX</div>
+        <div class="f-row">
+          <div class="f-group"><label>Prénom *</label><input type="text" id="f-prenom" placeholder="Jean"></div>
+          <div class="f-group"><label>Nom *</label><input type="text" id="f-nom" placeholder="Dupont"></div>
+        </div>
+        <div class="f-group"><label>Email *</label><input type="email" id="f-email" placeholder="jean@email.com"></div>
+        <div class="f-group"><label>Téléphone</label><input type="tel" id="f-tel" placeholder="+33 6 00 00 00 00"></div>
+        <div class="f-row">
+          <div class="f-group"><label>Format *</label><select id="f-format"><option value="">Choisir...</option><option>Solo</option><option>Duo</option><option>Équipe</option></select></div>
+          <div class="f-group"><label>Catégorie *</label><select id="f-cat"><option value="">Choisir...</option><option>Open</option><option>Pro</option><option>Masters +40</option></select></div>
+        </div>
+        <div class="f-group"><label>Club / Équipe</label><input type="text" id="f-club" placeholder="Nom de votre structure"></div>
+        <div class="f-group"><label>Message (optionnel)</label><textarea id="f-msg" placeholder="Questions, demandes particulières..."></textarea></div>
+        <p style="font-size:0.72rem;color:rgba(255,255,255,0.2);margin-bottom:0.5rem;letter-spacing:0.04em">* Champs obligatoires. Données utilisées uniquement pour cet événement.</p>
+        <button class="f-submit" id="sub-btn" onclick="doSubmit()">Confirmer mon inscription ▶</button>
+        <div class="toast" id="t-ok">✓ Inscription enregistrée — Un email de confirmation vous sera envoyé sous 48h.</div>
+        <div class="toast err" id="t-err" style="display:none">⚠ Veuillez remplir tous les champs obligatoires.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ADMIN -->
+<section class="admin-s" id="admin">
+  <div class="s-inner" style="max-width:1300px;margin:0 auto">
+    <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem;margin-bottom:1.5rem">
+      <div>
+        <div style="font-family:'Barlow Condensed',sans-serif;font-size:0.65rem;font-weight:600;letter-spacing:0.4em;color:rgba(255,255,255,0.2);text-transform:uppercase;margin-bottom:0.4rem">Zone protégée</div>
+        <h3 style="font-family:'Barlow Condensed',sans-serif;font-size:1.5rem;font-weight:800;text-transform:uppercase;color:rgba(255,255,255,0.5)">Panneau <span style="color:var(--gold)">Admin</span></h3>
+      </div>
+      <button class="admin-trigger" onclick="document.getElementById('admin-content').classList.toggle('open')">Accès admin ↓</button>
+    </div>
+    <div class="admin-content" id="admin-content">
+      <div class="pw-row">
+        <input type="password" id="pw-field" placeholder="Mot de passe admin...">
+        <button class="btn-sm btn-sm-gold" onclick="checkPw()">Accéder</button>
+      </div>
+      <div id="pw-err" style="display:none;color:#ef4444;font-size:0.8rem;margin:-1.5rem 0 1rem;letter-spacing:0.05em">Mot de passe incorrect.</div>
+      <div id="admin-data" style="display:none">
+        <div class="reg-header">
+          <div class="reg-count" id="reg-count">0 inscription</div>
+          <div class="actions-row">
+            <button class="btn-sm btn-sm-gold" onclick="exportCSV()">Exporter CSV ↓</button>
+            <button class="btn-sm btn-sm-outline" onclick="clearRegs()">Effacer tout</button>
+          </div>
+        </div>
+        <div style="overflow-x:auto;border:1px solid rgba(255,255,255,0.05)">
+          <table class="rtable">
+            <thead><tr><th>#</th><th>Prénom</th><th>Nom</th><th>Email</th><th>Tél</th><th>Format</th><th>Catégorie</th><th>Club</th><th>Date</th></tr></thead>
+            <tbody id="reg-body"><tr><td colspan="9" class="empty-row">Aucune inscription</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- DOCS -->
+<section class="s docs-s" id="docs">
+  <div class="s-inner">
+    <div class="s-label reveal">Ressources officielles</div>
+    <h2 class="s-title reveal reveal-delay-1">Documents<br><em>téléchargeables</em></h2>
+    <div class="docs-layout" id="docs-grid">
+      <div class="doc-item" onclick="alert('PDF règlement — à uploader via la zone ci-dessous')">
+        <div class="doc-icon-wrap"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg></div>
+        <div class="doc-body"><div class="doc-title">Règlement officiel</div><div class="doc-meta">PDF · Édition 2025 · Placeholder</div></div>
+        <div class="doc-arrow">↓ PDF</div>
+      </div>
+      <div class="doc-item" onclick="alert('PDF résultats — à uploader via la zone ci-dessous')">
+        <div class="doc-icon-wrap"><svg viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div>
+        <div class="doc-body"><div class="doc-title">Résultats — Édition 1</div><div class="doc-meta">PDF · Classement officiel · Placeholder</div></div>
+        <div class="doc-arrow">↓ PDF</div>
+      </div>
+      <div class="doc-item" onclick="alert('PDF guide — à uploader via la zone ci-dessous')">
+        <div class="doc-icon-wrap"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg></div>
+        <div class="doc-body"><div class="doc-title">Guide du participant</div><div class="doc-meta">PDF · Infos pratiques · Placeholder</div></div>
+        <div class="doc-arrow">↓ PDF</div>
+      </div>
+    </div>
+    <div class="upload-zone" onclick="document.getElementById('pdf-inp').click()">
+      <input type="file" id="pdf-inp" accept=".pdf" multiple style="display:none" onchange="addPdfs(event)">
+      <div class="upload-zone-label">+ Ajouter des PDF</div>
+      <p>Glissez ou cliquez pour uploader règles, résultats, guides... (accès admin)</p>
+    </div>
+  </div>
+</section>
+
+<!-- PARTENAIRES -->
+<section class="s partners-s" id="partenaires">
+  <div class="s-inner" style="text-align:center">
+    <div class="s-label reveal" style="justify-content:center">Ils nous font confiance</div>
+    <h2 class="s-title reveal reveal-delay-1">Nos <em>partenaires</em></h2>
+    <div class="partners-grid reveal reveal-delay-2">
+      <div class="partner"><div class="partner-ph"><span>Logo 1</span></div><div class="partner-label">Partenaire</div></div>
+      <div class="partner"><div class="partner-ph"><span>Logo 2</span></div><div class="partner-label">Partenaire</div></div>
+      <div class="partner"><div class="partner-ph"><span>Logo 3</span></div><div class="partner-label">Partenaire</div></div>
+      <div class="partner"><div class="partner-ph"><span>Logo 4</span></div><div class="partner-label">Partenaire</div></div>
+      <div class="partner"><div class="partner-ph"><span>Logo 5</span></div><div class="partner-label">Partenaire</div></div>
+      <div class="partner"><div class="partner-ph"><span>Logo 6</span></div><div class="partner-label">Partenaire</div></div>
+    </div>
+    <div class="partner-cta reveal">
+      <p>Vous souhaitez devenir partenaire officiel AVE ROX ?</p>
+      <a href="mailto:contact@averox.fr" style="font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:0.75rem;letter-spacing:0.25em;text-transform:uppercase;color:var(--gold);border:1px solid rgba(227,172,0,0.4);padding:0.7rem 1.8rem;text-decoration:none;display:inline-block;transition:background 0.2s">Nous contacter →</a>
+    </div>
+  </div>
+</section>
+
+<!-- SOCIALS -->
+<section class="socials-s" id="contact">
+  <div class="s-label reveal" style="justify-content:center;margin-bottom:1rem">Suivez l'aventure</div>
+  <h2 class="s-title reveal reveal-delay-1" style="text-align:center">Rejoignez<br>la <em>communauté</em></h2>
+  <p class="reveal reveal-delay-2" style="margin-top:1rem;font-size:0.9rem;color:rgba(255,255,255,0.3);letter-spacing:0.1em;text-align:center">Actu, inscriptions, behind the scenes — restez connectés</p>
+  <div class="social-row reveal reveal-delay-3">
+    <a class="social-link" href="https://instagram.com/averox" target="_blank">
+      <svg viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="5"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg>Instagram
+    </a>
+    <a class="social-link" href="https://facebook.com/averox" target="_blank">
+      <svg viewBox="0 0 24 24"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>Facebook
+    </a>
+    <a class="social-link" href="https://tiktok.com/@averox" target="_blank">
+      <svg viewBox="0 0 24 24"><path d="M9 12a4 4 0 1 0 4 4V4a5 5 0 0 0 5 5"/></svg>TikTok
+    </a>
+    <a class="social-link" href="https://youtube.com/@averox" target="_blank">
+      <svg viewBox="0 0 24 24"><path d="M22.54 6.42a2.78 2.78 0 0 0-1.95-1.97C18.88 4 12 4 12 4s-6.88 0-8.59.46a2.78 2.78 0 0 0-1.95 1.96A29 29 0 0 0 1 12a29 29 0 0 0 .46 5.58 2.78 2.78 0 0 0 1.95 1.97C5.12 20 12 20 12 20s6.88 0 8.59-.46a2.78 2.78 0 0 0 1.95-1.97A29 29 0 0 0 23 12a29 29 0 0 0-.46-5.58z"/><polygon points="9.75 15.02 15.5 12 9.75 8.98 9.75 15.02" fill="currentColor" stroke="none"/></svg>YouTube
+    </a>
+    <a class="social-link" href="mailto:contact@averox.fr">
+      <svg viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>Contact
+    </a>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <img src="./images/logo.png" alt="AVE ROX">
+        <p>La compétition fitness inspirée de HYROX. Course, force, mental — un événement unique fait en France.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Événement</h4>
+        <ul>
+          <li><a href="#concept">Le concept</a></li>
+          <li><a href="#format">Le format</a></li>
+          <li><a href="#docs">Règlement</a></li>
+          <li><a href="#docs">Résultats</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Participation</h4>
+        <ul>
+          <li><a href="#inscription">S'inscrire</a></li>
+          <li><a href="#inscription">Tarifs</a></li>
+          <li><a href="#partenaires">Partenaires</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Contact</h4>
+        <ul>
+          <li><a href="mailto:contact@averox.fr">contact@averox.fr</a></li>
+          <li><a href="https://instagram.com/averox">Instagram</a></li>
+          <li><a href="https://facebook.com/averox">Facebook</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2025 AVE ROX — Tous droits réservés · Inspiré de HYROX · Fait en France</p>
+      <p>Site réalisé par l'équipe AVE ROX · <a href="mailto:contact@averox.fr" style="color:rgba(227,172,0,0.5);text-decoration:none">contact@averox.fr</a></p>
+    </div>
+  </div>
+</footer>
+
+<!-- EMAILJS MODAL -->
+<div class="modal-bg" id="ejs-modal">
+  <div class="modal-box">
+    <button class="modal-close" onclick="document.getElementById('ejs-modal').classList.remove('open')">✕</button>
+    <h3>Configuration EmailJS</h3>
+    <p>Créez un compte gratuit sur <strong style="color:var(--gold)">emailjs.com</strong>, créez un service + template, puis renseignez vos identifiants.</p>
+    <div class="code-hint">Variables template : {{prenom}} {{nom}} {{email}} {{format}} {{categorie}} {{club}} {{date}}</div>
+    <div class="f-group"><label>Service ID</label><input type="text" id="ejs-sid" placeholder="service_xxxxxxx"></div>
+    <div class="f-group"><label>Template ID</label><input type="text" id="ejs-tid" placeholder="template_xxxxxxx"></div>
+    <div class="f-group"><label>Public Key</label><input type="text" id="ejs-pk" placeholder="xxxxxxxxxxxxxxx"></div>
+    <div class="f-group"><label>Email admin (destinataire)</label><input type="email" id="ejs-adm" placeholder="admin@averox.fr"></div>
+    <button class="f-submit" onclick="saveEJS()" style="clip-path:none">Sauvegarder</button>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+<script>
+// CURSOR
+const cursor = document.getElementById('cursor');
+const ring = document.getElementById('cursor-ring');
+let mx=0,my=0,rx=0,ry=0;
+document.addEventListener('mousemove',e=>{
+  mx=e.clientX;my=e.clientY;
+  cursor.style.left=mx+'px';cursor.style.top=my+'px';
+});
+function animRing(){
+  rx+=(mx-rx)*0.12;ry+=(my-ry)*0.12;
+  ring.style.left=rx+'px';ring.style.top=ry+'px';
+  requestAnimationFrame(animRing);
+}
+animRing();
+document.querySelectorAll('a,button,.doc-item,.partner,.step').forEach(el=>{
+  el.addEventListener('mouseenter',()=>{cursor.style.transform='translate(-50%,-50%) scale(2.5)';ring.style.transform='translate(-50%,-50%) scale(1.4)';ring.style.borderColor='rgba(227,172,0,0.8)'});
+  el.addEventListener('mouseleave',()=>{cursor.style.transform='translate(-50%,-50%) scale(1)';ring.style.transform='translate(-50%,-50%) scale(1)';ring.style.borderColor='rgba(227,172,0,0.5)'});
+});
+
+// NAV SCROLL
+window.addEventListener('scroll',()=>{
+  const nav=document.getElementById('main-nav');
+  if(window.scrollY>60)nav.classList.add('scrolled');
+  else nav.classList.remove('scrolled');
+});
+
+// REVEAL ON SCROLL
+const ro=new IntersectionObserver(entries=>{
+  entries.forEach(e=>{if(e.isIntersecting)e.target.classList.add('visible')});
+},{threshold:0.12});
+document.querySelectorAll('.reveal').forEach(el=>ro.observe(el));
+
+// DATA
+let regs=JSON.parse(localStorage.getItem('averox_regs')||'[]');
+let ejsCfg=JSON.parse(localStorage.getItem('averox_ejs')||'{}');
+const ADMIN_PW='averox2025';
+
+// SUBMIT
+function doSubmit(){
+  const p=document.getElementById('f-prenom').value.trim();
+  const n=document.getElementById('f-nom').value.trim();
+  const e=document.getElementById('f-email').value.trim();
+  const f=document.getElementById('f-format').value;
+  const c=document.getElementById('f-cat').value;
+  const t=document.getElementById('f-tel').value.trim();
+  const cl=document.getElementById('f-club').value.trim();
+  const m=document.getElementById('f-msg').value.trim();
+  document.getElementById('t-ok').classList.remove('ok');
+  document.getElementById('t-err').style.display='none';
+  if(!p||!n||!e||!f||!c){document.getElementById('t-err').style.display='block';return;}
+  const entry={id:Date.now(),prenom:p,nom:n,email:e,tel:t,format:f,categorie:c,club:cl,message:m,date:new Date().toLocaleString('fr-FR')};
+  regs.push(entry);
+  localStorage.setItem('averox_regs',JSON.stringify(regs));
+  trySendEmail(entry);
+  ['f-prenom','f-nom','f-email','f-tel','f-club','f-msg'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('f-format').value='';
+  document.getElementById('f-cat').value='';
+  document.getElementById('t-ok').classList.add('ok');
+}
+
+function trySendEmail(e){
+  if(!ejsCfg.sid||!ejsCfg.tid||!ejsCfg.pk)return;
+  try{emailjs.init(ejsCfg.pk);emailjs.send(ejsCfg.sid,ejsCfg.tid,{prenom:e.prenom,nom:e.nom,email:e.email,format:e.format,categorie:e.categorie,club:e.club||'—',date:e.date,admin_email:ejsCfg.adm||''});}catch(ex){console.log('EmailJS:',ex);}
+}
+
+// ADMIN
+function checkPw(){
+  if(document.getElementById('pw-field').value===ADMIN_PW){
+    document.getElementById('admin-data').style.display='block';
+    document.getElementById('pw-err').style.display='none';
+    renderTable();
+  }else{document.getElementById('pw-err').style.display='block';}
+}
+
+function renderTable(){
+  const tbody=document.getElementById('reg-body');
+  document.getElementById('reg-count').textContent=regs.length+' inscription'+(regs.length>1?'s':'');
+  if(!regs.length){tbody.innerHTML='<tr><td colspan="9" class="empty-row">Aucune inscription enregistrée</td></tr>';return;}
+  tbody.innerHTML=regs.map((r,i)=>`<tr><td style="color:var(--gold);font-family:'Barlow Condensed',sans-serif;font-size:0.8rem">${i+1}</td><td>${r.prenom}</td><td>${r.nom}</td><td style="color:rgba(255,255,255,0.45)">${r.email}</td><td style="color:rgba(255,255,255,0.35)">${r.tel||'—'}</td><td><span class="badge badge-${r.format.toLowerCase()}">${r.format}</span></td><td>${r.categorie}</td><td style="color:rgba(255,255,255,0.35)">${r.club||'—'}</td><td style="color:rgba(255,255,255,0.25);font-size:0.75rem">${r.date}</td></tr>`).join('');
+}
+
+function exportCSV(){
+  if(!regs.length){alert('Aucune inscription.');return;}
+  const h=['ID','Prénom','Nom','Email','Téléphone','Format','Catégorie','Club','Message','Date'];
+  const rows=regs.map(r=>[r.id,r.prenom,r.nom,r.email,r.tel||'',r.format,r.categorie,r.club||'',r.message||'',r.date]);
+  const csv=[h,...rows].map(r=>r.map(v=>'"'+String(v).replace(/"/g,'""')+'"').join(',')).join('\n');
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(new Blob(['\uFEFF'+csv],{type:'text/csv;charset=utf-8'}));
+  a.download='averox_inscriptions_'+new Date().toISOString().split('T')[0]+'.csv';
+  a.click();
+}
+
+function clearRegs(){
+  if(!confirm('Supprimer toutes les inscriptions ?'))return;
+  regs=[];localStorage.removeItem('averox_regs');renderTable();
+}
+
+// EJS
+function saveEJS(){
+  ejsCfg={sid:document.getElementById('ejs-sid').value.trim(),tid:document.getElementById('ejs-tid').value.trim(),pk:document.getElementById('ejs-pk').value.trim(),adm:document.getElementById('ejs-adm').value.trim()};
+  localStorage.setItem('averox_ejs',JSON.stringify(ejsCfg));
+  document.getElementById('ejs-modal').classList.remove('open');
+  alert('Configuration EmailJS sauvegardée.');
+}
+
+// PDF UPLOAD
+function addPdfs(ev){
+  const grid=document.getElementById('docs-grid');
+  Array.from(ev.target.files).forEach(file=>{
+    const url=URL.createObjectURL(file);
+    const d=document.createElement('a');
+    d.className='doc-item';d.href=url;d.download=file.name;
+    d.innerHTML=`<div class="doc-icon-wrap"><svg viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="1.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></div><div class="doc-body"><div class="doc-title">${file.name.replace('.pdf','')}</div><div class="doc-meta">PDF · ${(file.size/1024).toFixed(0)} Ko</div></div><div class="doc-arrow">↓ PDF</div>`;
+    grid.appendChild(d);
+  });
+}
+</script>
+</body>
+</html>
+        <p>Inspiré de HYROX · Fait en France · Un événement unique alliant performance, course et fitness fonctionnel.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Événement</h4>
+        <ul>
+          <li><a href="#concept">Le concept</a></li>
+          <li><a href="#format">Le format</a></li>
+          <li><a href="#docs">Règlement PDF</a></li>
+          <li><a href="#docs">Résultats</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Participer</h4>
+        <ul>
+          <li><a href="#inscription">S'inscrire</a></li>
+          <li><a href="#inscription">Tarifs</a></li>
+          <li><a href="#partenaires">Partenaires</a></li>
+          <li><a href="#contact">Contact</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Réseaux</h4>
+        <ul>
+          <li><a href="https://instagram.com/averox" target="_blank">Instagram</a></li>
+          <li><a href="https://facebook.com/averox" target="_blank">Facebook</a></li>
+          <li><a href="https://tiktok.com/@averox" target="_blank">TikTok</a></li>
+          <li><a href="https://youtube.com/@averox" target="_blank">YouTube</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2025 AVE ROX — Tous droits réservés · Inspiré de HYROX</p>
+      <p><a href="mailto:contact@averox.fr">contact@averox.fr</a></p>
+    </div>
+  </div>
+</footer>
+
+<!-- EMAILJS MODAL -->
+<div class="modal-bg" id="ejs-modal">
+  <div class="modal-box">
+    <button class="modal-close" onclick="document.getElementById('ejs-modal').classList.remove('open')">✕</button>
+    <h3>Configuration EmailJS</h3>
+    <p>Créez un compte gratuit sur <strong style="color:var(--gold)">emailjs.com</strong>, puis renseignez vos identifiants pour activer les emails automatiques à chaque inscription.</p>
+    <div class="code-hint">Variables : {{prenom}} {{nom}} {{email}} {{format}} {{categorie}} {{club}} {{date}}</div>
+    <div class="f-group"><label>Service ID</label><input type="text" id="ejs-sid" placeholder="service_xxxxxxx"></div>
+    <div class="f-group"><label>Template ID</label><input type="text" id="ejs-tid" placeholder="template_xxxxxxx"></div>
+    <div class="f-group"><label>Public Key</label><input type="text" id="ejs-pk" placeholder="xxxxxxxxxxxxxxx"></div>
+    <div class="f-group"><label>Email admin</label><input type="email" id="ejs-adm" placeholder="admin@averox.fr"></div>
+    <button class="f-submit" onclick="saveEJS()" style="clip-path:none">Sauvegarder</button>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+<script>
+// CURSOR
+const cursor=document.getElementById('cursor'),ring=document.getElementById('cursor-ring');
+let mx=0,my=0,rx=0,ry=0;
+document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;cursor.style.left=mx+'px';cursor.style.top=my+'px'});
+(function animRing(){rx+=(mx-rx)*0.12;ry+=(my-ry)*0.12;ring.style.left=rx+'px';ring.style.top=ry+'px';requestAnimationFrame(animRing)})();
+document.querySelectorAll('a,button,.doc-item,.partner,.step,.social-link').forEach(el=>{
+  el.addEventListener('mouseenter',()=>{cursor.style.transform='translate(-50%,-50%) scale(2.5)';ring.style.borderColor='rgba(227,172,0,0.9)'});
+  el.addEventListener('mouseleave',()=>{cursor.style.transform='translate(-50%,-50%) scale(1)';ring.style.borderColor='rgba(227,172,0,0.5)'});
+});
+
+// NAV SCROLL
+window.addEventListener('scroll',()=>{document.getElementById('main-nav').classList.toggle('scrolled',window.scrollY>60)});
+
+// REVEAL
+const ro=new IntersectionObserver(e=>{e.forEach(x=>{if(x.isIntersecting)x.target.classList.add('visible')})},{threshold:0.1});
+document.querySelectorAll('.reveal').forEach(el=>ro.observe(el));
+
+// DATA
+let regs=JSON.parse(localStorage.getItem('averox_regs')||'[]');
+let ejsCfg=JSON.parse(localStorage.getItem('averox_ejs')||'{}');
+const ADMIN_PW='averox2025';
+
+function doSubmit(){
+  const p=document.getElementById('f-prenom').value.trim(),n=document.getElementById('f-nom').value.trim(),e=document.getElementById('f-email').value.trim(),f=document.getElementById('f-format').value,c=document.getElementById('f-cat').value;
+  document.getElementById('t-ok').classList.remove('ok');document.getElementById('t-err').style.display='none';
+  if(!p||!n||!e||!f||!c){document.getElementById('t-err').style.display='block';return}
+  const entry={id:Date.now(),prenom:p,nom:n,email:e,tel:document.getElementById('f-tel').value.trim(),format:f,categorie:c,club:document.getElementById('f-club').value.trim(),message:document.getElementById('f-msg').value.trim(),date:new Date().toLocaleString('fr-FR')};
+  regs.push(entry);localStorage.setItem('averox_regs',JSON.stringify(regs));
+  trySendEmail(entry);
+  ['f-prenom','f-nom','f-email','f-tel','f-club','f-msg'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('f-format').value='';document.getElementById('f-cat').value='';
+  document.getElementById('t-ok').classList.add('ok');
+}
+function trySendEmail(e){if(!ejsCfg.sid)return;try{emailjs.init(ejsCfg.pk);emailjs.send(ejsCfg.sid,ejsCfg.tid,{prenom:e.prenom,nom:e.nom,email:e.email,format:e.format,categorie:e.categorie,club:e.club||'—',date:e.date,admin_email:ejsCfg.adm||''})}catch(ex){console.log('EJS:',ex)}}
+function checkPw(){if(document.getElementById('pw-field').value===ADMIN_PW){document.getElementById('admin-data').style.display='block';document.getElementById('pw-err').style.display='none';renderTable()}else{document.getElementById('pw-err').style.display='block'}}
+function renderTable(){
+  const tbody=document.getElementById('reg-body');
+  document.getElementById('reg-count').textContent=regs.length+' inscription'+(regs.length>1?'s':'');
+  if(!regs.length){tbody.innerHTML='<tr><td colspan="9" class="empty-row">Aucune inscription</td></tr>';return}
+  tbody.innerHTML=regs.map((r,i)=>`<tr><td style="color:var(--gold);font-family:'Barlow Condensed',sans-serif">${i+1}</td><td>${r.prenom}</td><td>${r.nom}</td><td style="color:rgba(255,255,255,0.5)">${r.email}</td><td style="color:rgba(255,255,255,0.35)">${r.tel||'—'}</td><td><span class="badge badge-${r.format.toLowerCase()}">${r.format}</span></td><td>${r.categorie}</td><td style="color:rgba(255,255,255,0.35)">${r.club||'—'}</td><td style="color:rgba(255,255,255,0.25);font-size:0.75rem">${r.date}</td></tr>`).join('');
+}
+function exportCSV(){if(!regs.length){alert('Aucune inscription.');return}const h=['ID','Prénom','Nom','Email','Téléphone','Format','Catégorie','Club','Message','Date'],rows=regs.map(r=>[r.id,r.prenom,r.nom,r.email,r.tel||'',r.format,r.categorie,r.club||'',r.message||'',r.date]),csv=[h,...rows].map(r=>r.map(v=>'"'+String(v).replace(/"/g,'""')+'"').join(',')).join('\n'),a=document.createElement('a');a.href=URL.createObjectURL(new Blob(['\uFEFF'+csv],{type:'text/csv;charset=utf-8'}));a.download='averox_inscriptions_'+new Date().toISOString().split('T')[0]+'.csv';a.click()}
+function clearRegs(){if(!confirm('Supprimer toutes les inscriptions ?'))return;regs=[];localStorage.removeItem('averox_regs');renderTable()}
+function saveEJS(){ejsCfg={sid:document.getElementById('ejs-sid').value.trim(),tid:document.getElementById('ejs-tid').value.trim(),pk:document.getElementById('ejs-pk').value.trim(),adm:document.getElementById('ejs-adm').value.trim()};localStorage.setItem('averox_ejs',JSON.stringify(ejsCfg));document.getElementById('ejs-modal').classList.remove('open');alert('Configuration EmailJS sauvegardée.')}
+function addPdfs(ev){const grid=document.getElementById('docs-grid');Array.from(ev.target.files).forEach(file=>{const url=URL.createObjectURL(file),d=document.createElement('a');d.className='doc-item';d.href=url;d.download=file.name;d.innerHTML=`<div class="doc-icon-wrap"><svg viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="1.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></div><div class="doc-body"><div class="doc-title">${file.name.replace('.pdf','')}</div><div class="doc-meta">PDF · ${(file.size/1024).toFixed(0)} Ko</div></div><div class="doc-arrow">↓ PDF</div>`;grid.appendChild(d)})}
+</script>
+</body>
+</html>
